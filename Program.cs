@@ -15,6 +15,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // services
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<CategoriesService>();
 
 var app = builder.Build();
 

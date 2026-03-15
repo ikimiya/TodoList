@@ -1,10 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using SQLitePCL;
-using TodoList.Data;
 using TodoList.Models;
 using TodoList.Services;
-
 namespace TodoList.Controllers;
 
 [ApiController]

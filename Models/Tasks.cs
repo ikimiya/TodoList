@@ -1,5 +1,7 @@
-﻿using System.ComponentModel;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace TodoList.Models
 {
@@ -40,11 +42,17 @@ namespace TodoList.Models
 
         // Foeign key to Users
         public int UserId { get; set; }
+        [JsonIgnore]
+        [ValidateNever]
         public Users User { get; set; } = null!;
 
         public int CategoryId { get; set; }
+        [JsonIgnore]
+        [ValidateNever]
         public Categories Category { get; set; } = null!;
 
+        [JsonIgnore]
+        [ValidateNever]
         public ICollection<TaskTags> TaskTags { get; set; } = new List<TaskTags>();
 
 

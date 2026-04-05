@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TodoList.Models;
 using TodoList.Services;
 
 namespace TodoList.Controllers;
+
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class TagsController : ControllerBase

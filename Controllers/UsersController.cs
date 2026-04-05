@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TodoList.Models;
 using TodoList.Services;
 namespace TodoList.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class UsersController : ControllerBase
@@ -69,11 +71,6 @@ public class UsersController : ControllerBase
         await _userService.Delete(id);
         return NoContent();
     }
-
-
-
-
-
 
 
 }

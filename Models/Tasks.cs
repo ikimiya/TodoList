@@ -22,7 +22,6 @@ namespace TodoList.Models
 
     public class Tasks
     {
-
         public int Id { get; set; }
 
         [Required]
@@ -38,9 +37,11 @@ namespace TodoList.Models
 
         public DateTime? DueDate { get; set; }
 
+        [JsonIgnore]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        // Foeign key to Users
+
+        [JsonIgnore]
         public int UserId { get; set; }
         [JsonIgnore]
         [ValidateNever]
@@ -54,7 +55,5 @@ namespace TodoList.Models
         [JsonIgnore]
         [ValidateNever]
         public ICollection<TaskTags> TaskTags { get; set; } = new List<TaskTags>();
-
-
     }
 }

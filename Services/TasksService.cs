@@ -14,9 +14,11 @@ namespace TodoList.Services
             _context = context;
         }
 
-        public async Task<List<Tasks>> GetAllTasks()
+        public async Task<List<Tasks>> GetAllTasks(int userID)
         {
-            return (await _context.Tasks.ToListAsync());
+            return await _context.Tasks
+                .Where(t => t.UserId == userID)
+                .ToListAsync();
         }
 
         public async Task<Tasks?> GetbyId (int id)
@@ -44,21 +46,24 @@ namespace TodoList.Services
             return true;
         }
 
-        public async Task<bool> Update (Tasks task)
+        public async Task<bool> Update(Tasks task)
         {
-            var index = await _context.Tasks.FindAsync(task.Id);
-            if(index == null)
+            var existing = await _context.Tasks.FindAsync(task.Id);
+            if (existing == null)
             {
                 return false;
             }
 
-            _context.Tasks.Update(task);
+            existing.Title = task.Title;
+            existing.Description = task.Description;
+            existing.Status = task.Status;
+            existing.Priority = task.Priority;
+            existing.DueDate = task.DueDate;
+            existing.CategoryId = task.CategoryId;
+
             await _context.SaveChangesAsync();
-
             return true;
-
         }
-
 
     }
 }

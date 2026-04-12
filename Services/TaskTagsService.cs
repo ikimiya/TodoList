@@ -15,9 +15,18 @@ namespace TodoList.Services
             _context = context;
         }
 
-        public async Task<List<TaskTags>> GetAllTaskTags()
+        public async Task<List<TaskTags>> GetTagsByTaskId(int taskId, int userId)
         {
-            return (await _context.TaskTags.ToListAsync());
+            // user verify
+            var task = await _context.Tasks.FirstOrDefaultAsync(t => t.Id == taskId && t.UserId == userId);
+            if (task == null)
+            {
+                return new List<TaskTags>();
+            }
+
+            return (await _context.TaskTags
+                .Where(t => t.TaskId == taskId)
+                .ToListAsync());
         }
 
         public async Task<TaskTags?> GetById (int id)
@@ -25,21 +34,40 @@ namespace TodoList.Services
             return await _context.TaskTags.FirstOrDefaultAsync(x => x.TaskId == id);
         }
 
-        public async Task<TaskTags> Create (TaskTags taskTags)
+        public async Task<bool> Create(int taskId, int tagId, int userId)
         {
-            await _context.TaskTags.AddAsync(taskTags);
+            var task = await _context.Tasks
+                        .FirstOrDefaultAsync(t => t.Id == taskId && t.UserId == userId);
+            if (task == null) return false;
+
+            var tag = await _context.Tags
+                        .FirstOrDefaultAsync(t => t.Id == tagId && t.UserId == userId);
+            if (tag == null) return false;
+
+            var existing = await _context.TaskTags
+                        .FirstOrDefaultAsync(tt => tt.TaskId == taskId && tt.TagId == tagId);
+            if (existing != null) return false;
+
+            await _context.TaskTags.AddAsync(new TaskTags 
+            {   TaskId = taskId, 
+                TagId = tagId 
+            });
             await _context.SaveChangesAsync();
-            return taskTags;
+            return true;
         }
 
-        public async Task<bool> Delete (int id)
+        public async Task<bool> Delete(int taskId, int tagId, int userId)
         {
-            var taskTags = await GetById(id);
-            if(taskTags == null)
-            {
-                return false;
-            }
-            _context.TaskTags.Remove(taskTags);
+            // verify task belongs to user
+            var task = await _context.Tasks
+                .FirstOrDefaultAsync(t => t.Id == taskId && t.UserId == userId);
+            if (task == null) return false;
+
+            var taskTag = await _context.TaskTags
+                .FirstOrDefaultAsync(tt => tt.TaskId == taskId && tt.TagId == tagId);
+            if (taskTag == null) return false;
+
+            _context.TaskTags.Remove(taskTag);
             await _context.SaveChangesAsync();
             return true;
         }

@@ -7,8 +7,9 @@ namespace TodoList.Controllers;
 [Authorize]
 [ApiController]
 [Route("[controller]")]
-public class CategoriesController : ControllerBase
+public class CategoriesController : BaseController
 {
+
     private readonly CategoriesService _categoryService;
 
     public CategoriesController(CategoriesService categoriesService)
@@ -20,14 +21,15 @@ public class CategoriesController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<Categories>>> GetAll()
     {
-        return (await _categoryService.GetAllCategories());
+        var userID = GetUserId();
+        return await _categoryService.GetAllCategories(userID);
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<Categories>> GetById(int id)
     {
         var categories = await _categoryService.GetById(id);
-        if (categories == null)
+        if (categories == null || categories.UserId != GetUserId())
         {
             return NotFound();
         }
@@ -37,6 +39,7 @@ public class CategoriesController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create(Categories categories)
     {
+        categories.UserId = GetUserId();
         await _categoryService.Create(categories);
         return CreatedAtAction(nameof(GetById), new { id = categories.Id }, categories);
     }
@@ -44,17 +47,14 @@ public class CategoriesController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, Categories categories)
     {
-        if (id != categories.Id)
-        {
-            return BadRequest();
-        }
-
         var existingCategories = await _categoryService.GetById(id);
-        if (existingCategories is null)
+        if (existingCategories == null || existingCategories.UserId != GetUserId())
         {
             return NotFound();
         }
 
+        categories.Id = id;
+        categories.UserId = GetUserId();
         await _categoryService.Update(categories);
         return NoContent();
     }
@@ -64,7 +64,7 @@ public class CategoriesController : ControllerBase
     {
         var categories = await _categoryService.GetById(id);
 
-        if (categories is null)
+        if (categories == null || categories.UserId != GetUserId())
         {
             return NotFound();
         }
@@ -72,11 +72,6 @@ public class CategoriesController : ControllerBase
         await _categoryService.Delete(id);
         return NoContent();
     }
-
-
-
-
-
 
 
 }

@@ -13,9 +13,11 @@ namespace TodoList.Services
             _context = context;
         }
 
-        public async Task<List<Categories>> GetAllCategories()
+        public async Task<List<Categories>> GetAllCategories(int userID)
         {
-            return (await _context.Categories.ToListAsync());
+            return (await _context.Categories
+                .Where(t => t.UserId == userID)
+                .ToListAsync());
         }
 
         public async Task<Categories?> GetById(int id)
@@ -46,16 +48,16 @@ namespace TodoList.Services
 
         public async Task<bool> Update(Categories categories)
         {
-            var index = await _context.Categories.FindAsync(categories.Id);
+            var existing = await _context.Categories.FindAsync(categories.Id);
 
-            if (index == null)
+            if (existing == null)
             {
                 return false;
             }
 
-            _context.Categories.Update(categories);
-            await _context.SaveChangesAsync();
+            existing.Name = categories.Name;
 
+            await _context.SaveChangesAsync();
             return true;
         }
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using TodoList.Models;
 using TodoList.Services;
 
@@ -9,8 +10,9 @@ namespace TodoList.Controllers;
 [Authorize]
 [ApiController]
 [Route("[controller]")]
-public class TagsController : ControllerBase
+public class TagsController : BaseController
 {
+
     private readonly TagsService _tagService;
     
     public TagsController(TagsService tagService)
@@ -21,14 +23,15 @@ public class TagsController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<Tags>>> GetAll()
     {
-        return (await _tagService.GetAllTags());
+        var userID = GetUserId();
+        return (await _tagService.GetAllTags(userID));
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<Tags>> GetById(int id)
     {
         var tag = await _tagService.GetById(id);
-        if (tag == null)
+        if (tag == null || tag.UserId != GetUserId())
         {
             return NotFound();
         }
@@ -38,6 +41,7 @@ public class TagsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create(Tags tag)
     {
+        tag.UserId = GetUserId();
         await _tagService.Create(tag);
         return CreatedAtAction(nameof(GetById), new {id = tag.Id},tag);
     }
@@ -51,11 +55,12 @@ public class TagsController : ControllerBase
         }
 
         var existTag = await _tagService.GetById(id);
-        if(existTag == null)
+        if(existTag == null || existTag.UserId != GetUserId())
         {
             return NotFound();
         }
 
+        tag.UserId = GetUserId();
         await _tagService.Update(tag);
         return NoContent();
     }
@@ -66,7 +71,7 @@ public class TagsController : ControllerBase
     {
         var existTag = await _tagService.GetById(id);
 
-        if(existTag == null)
+        if(existTag == null || existTag.UserId != GetUserId())
         {
             return NotFound();
         }

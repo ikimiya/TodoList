@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using TodoList.Models;
 using TodoList.Services;
 
@@ -11,6 +12,11 @@ namespace TodoList.Controllers;
 [Route("[controller]")]
 public class TasksController : ControllerBase
 {
+    protected int GetUserId()
+    {
+        return int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+    }
+
     private readonly TasksService _taskService;
 
     public TasksController(TasksService taskService)
@@ -21,14 +27,15 @@ public class TasksController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<Tasks>>> GetAll()
     {
-        return (await _taskService.GetAllTasks());
+        var userId = GetUserId();
+        return await _taskService.GetAllTasks(userId);
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<Tasks>> GetById(int id)
     {
         var task = await _taskService.GetbyId(id);
-        if (task == null)
+        if (task == null || task.UserId != GetUserId())
         {
             return NotFound();
         }
@@ -38,6 +45,7 @@ public class TasksController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create(Tasks task)
     {
+        task.UserId = GetUserId();
         await _taskService.Create(task);
         return CreatedAtAction(nameof(GetById), new { id = task.Id, task });
     }
@@ -45,15 +53,14 @@ public class TasksController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, Tasks task)
     {
-        if (id != task.Id)
-        {
-            return BadRequest();
-        }
         var existingTask = await _taskService.GetbyId(id);
-        if (existingTask == null)
+        if (existingTask == null || existingTask.UserId != GetUserId())
         {
             return NotFound();
         }
+
+        task.Id = id;             
+        task.UserId = GetUserId();
         await _taskService.Update(task);
         return NoContent();
     }
@@ -62,7 +69,7 @@ public class TasksController : ControllerBase
     public async Task<IActionResult> Delete(int id)
     {
         var existingTask = await _taskService.GetbyId(id);
-        if (existingTask == null)
+        if (existingTask == null || existingTask.UserId != GetUserId())
         {
             return NotFound();
         }

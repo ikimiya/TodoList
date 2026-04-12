@@ -11,11 +11,15 @@ namespace TodoList.Models
         [Required]
         public string Name { get; set; } = string.Empty;
 
+        // Add these
+        public int UserId { get; set; }
+
+        [JsonIgnore]
+        [ValidateNever]
+        public Users User { get; set; } = null!;
+
         [JsonIgnore]
         [ValidateNever]
         public ICollection<TaskTags> TaskTags { get; set; } = new List<TaskTags>();
-
-
-
     }
 }

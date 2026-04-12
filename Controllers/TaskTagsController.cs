@@ -7,36 +7,33 @@ namespace TodoList.Controllers;
 [Authorize]
 [ApiController]
 [Route("[controller]")]
-public class TaskTagsController : ControllerBase
+public class TaskTagsController : BaseController
 {
+
     private readonly TaskTagsService _taskTagsService;
     public TaskTagsController(TaskTagsService taskTagsService)
     {
         _taskTagsService = taskTagsService;
     }
 
-    [HttpGet]
-    public async Task<ActionResult<List<TaskTags>>> GetAll()
+    [HttpGet("{taskId}")]
+    public async Task<ActionResult<List<TaskTags>>> GetTagsByTaskId(int taskId)
     {
-        return (await _taskTagsService.GetAllTaskTags());
+        var userId = GetUserId();
+
+        return (await _taskTagsService.GetTagsByTaskId(taskId,userId));
     }
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<TaskTags>> GetById(int id)
+
+    [HttpPost("{taskId}/{tagId}")]
+    public async Task<IActionResult> Create(int taskId, int tagId)
     {
-        var taskTag = await _taskTagsService.GetById(id);
-        if (taskTag == null)
+        var result = await _taskTagsService.Create(taskId, tagId, GetUserId());
+        if(!result)
         {
             return NotFound();
         }
-        return taskTag;
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> Create(TaskTags taskTag)
-    {
-        await _taskTagsService.Create(taskTag);
-        return CreatedAtAction(nameof(GetById), new { id = taskTag.TaskId, taskTag });
+        return Ok();
     }
 
     [HttpPut("{id}")]
@@ -56,14 +53,13 @@ public class TaskTagsController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(int taskId, int tagId)
     {
-        var existingTaskTag = await _taskTagsService.GetById(id);
-        if (existingTaskTag == null) 
+        var result = await _taskTagsService.Delete(taskId, tagId, GetUserId());
+        if (!result)
         {
             return NotFound();
         }
-        await _taskTagsService.Delete(id);
-        return NoContent();
+        return Ok();
     }
 }

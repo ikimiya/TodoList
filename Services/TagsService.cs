@@ -28,6 +28,14 @@ namespace TodoList.Services
 
         public async Task<Tags> Create(Tags tags)
         {
+            var duplicate = await _context.Tags.
+                FirstOrDefaultAsync(t => t.UserId == tags.UserId && t.Name.ToLower() == tags.Name.ToLower());
+
+            if(duplicate != null)
+            {
+                throw new Exception("Tag already exists");
+            }
+
             await _context.Tags.AddAsync(tags);
             await _context.SaveChangesAsync();
             return tags;
@@ -48,12 +56,24 @@ namespace TodoList.Services
 
         public async Task<bool> Update(Tags tags)
         {
-            var index = await _context.Tags.FindAsync(tags.Id);
-            if(index == null)
+            var existing = await _context.Tags.FindAsync(tags.Id);
+
+            if(existing == null)
             {
                 return false;
             }
-            _context.Tags.Update(tags);
+
+            var duplicate = await _context.Tags.
+                FirstOrDefaultAsync(t => t.UserId == tags.UserId && 
+                t.Name.ToLower() == tags.Name.ToLower() && 
+                t.Id != tags.Id);
+
+            if (duplicate != null)
+            {
+                throw new Exception("Tag already exists");
+            }
+
+            existing.Name = tags.Name;
             await _context.SaveChangesAsync();
             return true;
         }

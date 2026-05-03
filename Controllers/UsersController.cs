@@ -7,7 +7,7 @@ namespace TodoList.Controllers;
 [Authorize]
 [ApiController]
 [Route("[controller]")]
-public class UsersController : ControllerBase
+public class UsersController : BaseController
 {
     private readonly UserService _userService;
 
@@ -72,5 +72,35 @@ public class UsersController : ControllerBase
         return NoContent();
     }
 
+
+    // user profile
+
+    [HttpGet("profile")]
+    public async Task<IActionResult> GetProfile()
+    {
+        var user = await _userService.GetProfile(GetUserId());
+        if (user == null) return NotFound();
+        return Ok(user);
+    }
+
+    [HttpPut("profile")]
+    public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request)
+    {
+        try
+        {
+            await _userService.UpdateProfile(GetUserId(), request.Email, request.Password);
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    public class UpdateProfileRequest
+    {
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+    }
 
 }

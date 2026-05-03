@@ -16,6 +16,15 @@ public class TaskTagsController : BaseController
         _taskTagsService = taskTagsService;
     }
 
+
+
+    [HttpGet]
+    public async Task<ActionResult<List<TaskTags>>> GetAll()
+    {
+        var userId = GetUserId();
+        return (await _taskTagsService.GetAllTaskTags(userId));
+    }
+
     [HttpGet("{taskId}")]
     public async Task<ActionResult<List<TaskTags>>> GetTagsByTaskId(int taskId)
     {
@@ -36,21 +45,6 @@ public class TaskTagsController : BaseController
         return Ok();
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, TaskTags taskTag)
-    {
-        if (id != taskTag.TaskId)
-        {
-            return BadRequest();
-        }
-        var existingTaskTag = await _taskTagsService.GetById(id);
-        if (existingTaskTag == null)
-        {
-            return NotFound();
-        }
-        await _taskTagsService.Update(taskTag);
-        return NoContent();
-    }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int taskId, int tagId)

@@ -27,6 +27,16 @@ namespace TodoList.Services
 
         public async Task<Categories> Create(Categories categories)
         {
+
+            var duplicate = await _context.Categories
+                .FirstOrDefaultAsync(c => c.UserId == categories.UserId &&
+                                    c.Name.ToLower() == categories.Name.ToLower());
+
+            if (duplicate != null)
+            {
+                throw new Exception("Category already exists");
+            }
+
             await _context.Categories.AddAsync(categories);
             await _context.SaveChangesAsync();
             return categories;
@@ -55,8 +65,17 @@ namespace TodoList.Services
                 return false;
             }
 
-            existing.Name = categories.Name;
+            var duplicate = await _context.Categories
+                .FirstOrDefaultAsync(c => c.UserId == categories.UserId &&
+                                    c.Name.ToLower() == categories.Name.ToLower()
+                                    && c.Id != categories.Id);
 
+            if (duplicate != null)
+            {
+                throw new Exception("Category already exists");
+            }
+
+            existing.Name = categories.Name;
             await _context.SaveChangesAsync();
             return true;
         }

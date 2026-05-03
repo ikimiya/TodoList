@@ -18,10 +18,12 @@ public class TasksController : ControllerBase
     }
 
     private readonly TasksService _taskService;
+    private readonly CategoriesService _categoryService;
 
-    public TasksController(TasksService taskService)
+    public TasksController(TasksService taskService, CategoriesService categoryService)
     {
         _taskService = taskService;
+        _categoryService = categoryService;
     }
 
     [HttpGet]
@@ -57,6 +59,12 @@ public class TasksController : ControllerBase
         if (existingTask == null || existingTask.UserId != GetUserId())
         {
             return NotFound();
+        }
+
+        var category = await _categoryService.GetById(task.CategoryId);
+        if (category == null || category.UserId != GetUserId())
+        {
+            return BadRequest("Invalid category");
         }
 
         task.Id = id;             

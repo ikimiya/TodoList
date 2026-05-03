@@ -11,6 +11,7 @@ namespace TodoList.Models
         [Required]
         public string Name { get; set; } = string.Empty;
 
+        [JsonIgnore]
         public int UserId { get; set; }
 
         [JsonIgnore]

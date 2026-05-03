@@ -15,6 +15,14 @@ namespace TodoList.Services
             _context = context;
         }
 
+        public async Task<List<TaskTags>> GetAllTaskTags(int userId)
+        {
+            return await _context.TaskTags
+                .Where(tt => tt.Task.UserId == userId)
+                .ToListAsync();
+        }
+
+
         public async Task<List<TaskTags>> GetTagsByTaskId(int taskId, int userId)
         {
             // user verify

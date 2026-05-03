@@ -19,6 +19,11 @@ namespace TodoList.Services
             return (await _context.Users.ToListAsync());
         }
 
+        public async Task<List<Users>> GetAllSelfUsers(int userID)
+        {
+            return (await _context.Users.Where(u => u.Id == userID).ToListAsync());
+        }
+
         public async Task<Users?> GetById(int id)
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
@@ -58,6 +63,31 @@ namespace TodoList.Services
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
 
+            return true;
+        }
+
+
+        // User Profile
+        public async Task<Users?> GetProfile(int userId)
+        {
+            return await _context.Users.FindAsync(userId);
+        }
+
+        public async Task<bool> UpdateProfile(int userId, string email, string password)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null) return false;
+
+            var duplicate = await _context.Users
+                .FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower()
+                                     && u.Id != userId);
+            if (duplicate != null)
+                throw new Exception("Email already in use");
+
+            user.Email = email;
+            user.Password = BCrypt.Net.BCrypt.HashPassword(password);
+
+            await _context.SaveChangesAsync();
             return true;
         }
 

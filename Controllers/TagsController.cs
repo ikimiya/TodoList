@@ -42,18 +42,23 @@ public class TagsController : BaseController
     public async Task<IActionResult> Create(Tags tag)
     {
         tag.UserId = GetUserId();
-        await _tagService.Create(tag);
-        return CreatedAtAction(nameof(GetById), new {id = tag.Id},tag);
+
+        try
+        {
+            await _tagService.Create(tag);
+            return CreatedAtAction(nameof(GetById), new { id = tag.Id }, tag);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+
+
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, Tags tag)
     {
-        if(id != tag.Id)
-        {
-            return BadRequest();
-        }
-
         var existTag = await _tagService.GetById(id);
         if(existTag == null || existTag.UserId != GetUserId())
         {
@@ -61,8 +66,18 @@ public class TagsController : BaseController
         }
 
         tag.UserId = GetUserId();
-        await _tagService.Update(tag);
-        return NoContent();
+        try
+        {
+            tag.Id = id;
+            tag.UserId = GetUserId();
+            await _tagService.Update(tag);
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+
     }
 
 

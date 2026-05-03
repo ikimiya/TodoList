@@ -40,8 +40,16 @@ public class CategoriesController : BaseController
     public async Task<IActionResult> Create(Categories categories)
     {
         categories.UserId = GetUserId();
-        await _categoryService.Create(categories);
-        return CreatedAtAction(nameof(GetById), new { id = categories.Id }, categories);
+        try
+        {
+            await _categoryService.Create(categories);
+            return CreatedAtAction(nameof(GetById), new { id = categories.Id }, categories);
+        }
+        catch (Exception ex) 
+        {
+            return BadRequest(ex.Message);
+        }
+
     }
 
     [HttpPut("{id}")]
@@ -53,10 +61,19 @@ public class CategoriesController : BaseController
             return NotFound();
         }
 
-        categories.Id = id;
         categories.UserId = GetUserId();
-        await _categoryService.Update(categories);
-        return NoContent();
+        try
+        {
+            categories.Id = id;
+            categories.UserId = GetUserId();
+            await _categoryService.Update(categories);
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+
     }
 
     [HttpDelete("{id}")]

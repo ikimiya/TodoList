@@ -14,10 +14,18 @@ namespace TodoList.Services
             _context = context;
         }
 
-        public async Task<List<Tasks>> GetAllTasks(int userID)
+        public async Task<List<Tasks>> GetAllTasks(int userId)
         {
             return await _context.Tasks
-                .Where(t => t.UserId == userID)
+                .Where(t => t.UserId == userId && !t.IsDeleted)
+                .ToListAsync();
+
+        }
+
+        public async Task<List<Tasks>> GetDeletedTasks(int userId)
+        {
+            return await _context.Tasks
+                .Where(t => t.UserId == userId && t.IsDeleted)
                 .ToListAsync();
         }
 
@@ -33,15 +41,14 @@ namespace TodoList.Services
             await _context.SaveChangesAsync();
             return task;
         }
-        
-        public async Task<bool> Delete (int id)
+
+        public async Task<bool> Delete(int id)
         {
             var task = await GetbyId(id);
-            if(task == null)
-            {
-                return false;
-            }
-            _context.Tasks.Remove(task);
+            if (task == null) return false;
+
+            task.IsDeleted = true;
+            task.DeletedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
             return true;
         }

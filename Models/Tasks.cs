@@ -55,5 +55,8 @@ namespace TodoList.Models
         [JsonIgnore]
         [ValidateNever]
         public ICollection<TaskTags> TaskTags { get; set; } = new List<TaskTags>();
+
+        public bool IsDeleted { get; set; } = false;
+        public DateTime? DeletedAt { get; set; }
     }
 }

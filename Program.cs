@@ -11,6 +11,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSession();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddHttpClient("TodoListAPI", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7265/");
+});
+
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
@@ -72,6 +79,12 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+
+// Index html
+//app.UseDefaultFiles();
+//app.UseStaticFiles();
+
+app.UseSession();
 
 app.UseSwagger();
 app.UseSwaggerUI();

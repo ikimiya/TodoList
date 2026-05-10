@@ -33,6 +33,13 @@ public class TasksController : ControllerBase
         return await _taskService.GetAllTasks(userId);
     }
 
+    [HttpGet("deleted")]
+    public async Task<ActionResult<List<Tasks>>> GetDeleted()
+    {
+        return await _taskService.GetDeletedTasks(GetUserId());
+    }
+
+
     [HttpGet("{id}")]
     public async Task<ActionResult<Tasks>> GetById(int id)
     {

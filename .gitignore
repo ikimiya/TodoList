@@ -5,13 +5,11 @@
 
 appsettings.Development.json
 appsettings.json
-wwwroot/
 
 # Database file - contains your actual data
 todolist.db
 todolist.db-shm
 todolist.db-wal
-
 
 # User-specific files
 *.rsuser
@@ -372,3 +370,4 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /appsettings.json
+/.gitignore

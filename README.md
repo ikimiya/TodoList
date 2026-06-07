@@ -11,6 +11,8 @@ Built using ASP.NET Core MVC with a layered backend structure. Users can registe
 
 JWT authentication is used to secure endpoints and ensure users can only access their own data. Entity Framework Core handles database access and migrations.
 
+The frontend is built with React and Vite and served by the ASP.NET Core backend.
+
 ---
 
 ## Core Features
@@ -30,7 +32,8 @@ JWT authentication is used to secure endpoints and ensure users can only access 
 - **Controllers** – Handle HTTP requests and routing  
 - **Services Layer** – Focuses on the logic, validation and data manipulation 
 - **Data (EF Core)** – Handles database communication  
-- **SQL Database** – Stores users, Tags, Task and todo items  
+- **SQL Database** – Stores users, Tags, Task and todo items 
+- **Frontend** – React + Vite (WIP) for user interface and API consumption
 
 Designed with separation of concerns to improve scalability and maintainability.
 
@@ -59,7 +62,7 @@ Designed with separation of concerns to improve scalability and maintainability.
 
 ## Tech Stack
 
-C# · ASP.NET Core MVC · Entity Framework Core · SQL Server / SQLite · JWT Authentication · Swagger · REST API
+C# · ASP.NET Core MVC · Entity Framework Core · SQL Server / SQLite · JWT Authentication · Swagger · REST API · React + Vite (Frontend) WIP 
 
 ---
 

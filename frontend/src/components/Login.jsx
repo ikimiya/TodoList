@@ -39,7 +39,6 @@ function Login()
         }
     }
 
-
     // register
     async function register() {
         const response = await fetch('/api/AuthApi/register', {
@@ -55,6 +54,7 @@ function Login()
         }
     }
 
+    // Forms for login and register
     function loginForm() {
         return (
             <div className="row justify-content-center mt-5">

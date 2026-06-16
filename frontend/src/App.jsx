@@ -5,7 +5,7 @@ import Tasks from './components/Tasks'
 
 function App() {
 
-    const [token, setToken] = useState(localStorage.getItem('token'))
+    const [token] = useState(localStorage.getItem('token'))
 
     let page 
     if (token) {

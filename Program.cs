@@ -80,9 +80,9 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-// Index html
-//app.UseDefaultFiles();
-//app.UseStaticFiles();
+// use frontend index.html as default page
+app.UseDefaultFiles();
+app.UseStaticFiles();
 
 app.UseSession();
 

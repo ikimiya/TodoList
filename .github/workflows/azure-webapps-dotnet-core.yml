@@ -65,9 +65,6 @@ jobs:
           cd frontend
           npm install
           npm run build
-
-      - name: Copy frontend dist to wwwroot
-        run: cp -r frontend/dist/. wwwroot/
           
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp

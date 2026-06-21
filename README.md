@@ -1,15 +1,17 @@
-# C# .NET Todo List API (Full Stack CRUD Application)
+# TodoList — Full Stack ASP.NET Core Web App
 
 --- 
-A secure full-stack Todo List application built with ASP.NET Core. It provides authentication and task management through a RESTful API backed by a SQL database.
+A secure full-stack task manager built with ASP.NET Core and React. Features JWT authentication, category-based task organization, soft delete, and is deployed to Azure App Service via GitHub Actions CI/CD.
 
+---
+Live Deployment: [todolist app](https://todo-list-e2crgubpevb7eqgz.westcentralus-01.azurewebsites.net)
 ---
 
 ## Overview
 
-Built using ASP.NET Core MVC with a layered backend structure. Users can register, log in, and perform CRUD operations on their own todo items.
+Built using ASP.NET Core with a layered backend structure. Users can register, log in, create categories, manage tasks within those categories, and view deleted tasks in a trash view.
 
-JWT authentication is used to secure endpoints and ensure users can only access their own data. Entity Framework Core handles database access and migrations.
+JWT authentication secures all endpoints and ensures users can only access their own data. Entity Framework Core handles database access and migrations.
 
 The frontend is built with React and Vite and served by the ASP.NET Core backend.
 
@@ -19,7 +21,9 @@ The frontend is built with React and Vite and served by the ASP.NET Core backend
 
 - JWT-based authentication (register / login)
 - Protected API routes using token validation
-- Full CRUD operations for todo management
+- Category creation and management
+- Task creation scoped to specific categories
+- Soft delete with trash view
 - User-specific data isolation
 - RESTful API design using standard HTTP methods
 - Entity Framework Core integration with SQL database
@@ -30,10 +34,10 @@ The frontend is built with React and Vite and served by the ASP.NET Core backend
 ## Architecture
 
 - **Controllers** – Handle HTTP requests and routing  
-- **Services Layer** – Focuses on the logic, validation and data manipulation 
+- **Services Layer** – Business logic, validation and data manipulation 
 - **Data (EF Core)** – Handles database communication  
-- **SQL Database** – Stores users, Tags, Task and todo items 
-- **Frontend** – React + Vite (WIP) for user interface and API consumption
+- **SQL Database** – Stores users, categories, and tasks  
+- **Frontend** – React + Vite for user interface and API consumption
 
 Designed with separation of concerns to improve scalability and maintainability.
 
@@ -62,7 +66,7 @@ Designed with separation of concerns to improve scalability and maintainability.
 
 ## Tech Stack
 
-C# · ASP.NET Core MVC · Entity Framework Core · SQL Server / SQLite · JWT Authentication · Swagger · REST API · React + Vite (Frontend) WIP 
+C# · ASP.NET Core · Entity Framework Core · SQL Server / SQLite · JWT Authentication · Swagger · REST API · React + Vite
 
 ---
 
@@ -70,4 +74,4 @@ C# · ASP.NET Core MVC · Entity Framework Core · SQL Server / SQLite · JWT Au
 
 - Built with a focus on clean API structure and relational database design  
 - Swagger used for testing and API visualization  
-- Designed to reflect typical backend patterns used in .NET web applications  
+- Deployed to Azure App Service on Linux via GitHub Actions CI/CD pipeline

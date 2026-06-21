@@ -4,7 +4,10 @@
 A secure full-stack task manager built with ASP.NET Core and React. Features JWT authentication, category-based task organization, soft delete, and is deployed to Azure App Service via GitHub Actions CI/CD.
 
 ---
+
 Live Deployment: [todolist app](https://todo-list-e2crgubpevb7eqgz.westcentralus-01.azurewebsites.net)
+> Note: Hosted on Azure free tier — may take a moment to load on first visit.
+
 ---
 
 ## Overview
